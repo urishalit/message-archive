@@ -37,18 +37,18 @@ export default function ConfirmImportScreen() {
   if (!parsed) {
     return (
       <View style={styles.center}>
-        <Text>No import data found. Please go back and start over.</Text>
+        <Text>לא נמצאו נתוני ייבוא. חזור אחורה והתחל מחדש.</Text>
       </View>
     );
   }
 
   const handleSave = async () => {
     if (!pageName.trim()) {
-      Alert.alert("Name required", "Please give this conversation a name.");
+      Alert.alert("נדרש שם", "נא לתת שם לשיחה.");
       return;
     }
     if (!user) {
-      Alert.alert("Not signed in");
+      Alert.alert("לא מחובר");
       return;
     }
 
@@ -88,14 +88,14 @@ export default function ConfirmImportScreen() {
       // Clean up
       delete globalThis.__importData;
 
-      Alert.alert("Imported!", `${parsed.messages.length} messages saved.`, [
+      Alert.alert("יובא בהצלחה!", `${parsed.messages.length} הודעות נשמרו.`, [
         {
           text: "OK",
           onPress: () => router.replace("/(tabs)/home"),
         },
       ]);
     } catch (error: any) {
-      Alert.alert("Error", error.message || "Failed to save");
+      Alert.alert("שגיאה", error.message || "השמירה נכשלה");
     } finally {
       setSaving(false);
     }
@@ -103,26 +103,26 @@ export default function ConfirmImportScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.label}>Conversation Name</Text>
+      <Text style={styles.label}>שם השיחה</Text>
       <TextInput
         style={styles.input}
         value={pageName}
         onChangeText={setPageName}
-        placeholder="e.g., Family Chat - March 2024"
+        placeholder="לדוגמה, צ'אט משפחתי - מרץ 2024"
         placeholderTextColor="#999"
       />
 
       <Text style={styles.sectionTitle}>
-        Assign Nicknames ({parsed.participants.length} participants)
+        הגדרת כינויים ({parsed.participants.length} משתתפים)
       </Text>
       <Text style={styles.sectionSubtitle}>
-        These will be displayed instead of original identifiers
+        אלה יוצגו במקום המזהים המקוריים
       </Text>
 
       {parsed.participants.map((participant) => (
         <View key={participant} style={styles.nicknameRow}>
           <Text style={styles.participantLabel} numberOfLines={1}>
-            Sender {parsed.participants.indexOf(participant) + 1}
+            שולח {parsed.participants.indexOf(participant) + 1}
           </Text>
           <TextInput
             style={styles.nicknameInput}
@@ -130,14 +130,14 @@ export default function ConfirmImportScreen() {
             onChangeText={(text) =>
               setNicknames((prev) => ({ ...prev, [participant]: text }))
             }
-            placeholder="Nickname"
+            placeholder="כינוי"
             placeholderTextColor="#999"
           />
         </View>
       ))}
 
       <Text style={styles.summary}>
-        {parsed.messages.length} messages will be imported
+        {parsed.messages.length} הודעות ייובאו
       </Text>
 
       <TouchableOpacity
@@ -149,7 +149,7 @@ export default function ConfirmImportScreen() {
         {saving ? (
           <ActivityIndicator color="#fff" />
         ) : (
-          <Text style={styles.buttonText}>Save to Archive</Text>
+          <Text style={styles.buttonText}>שמור בארכיון</Text>
         )}
       </TouchableOpacity>
     </ScrollView>

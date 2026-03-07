@@ -46,9 +46,9 @@ export default function HomeScreen() {
     <View style={styles.container}>
       {recipients.length === 0 ? (
         <View style={styles.center}>
-          <Text style={styles.emptyText}>No conversations yet</Text>
+          <Text style={styles.emptyText}>אין שיחות עדיין</Text>
           <Text style={styles.emptySubtext}>
-            Import a chat to get started
+            ייבא צ'אט כדי להתחיל
           </Text>
         </View>
       ) : (

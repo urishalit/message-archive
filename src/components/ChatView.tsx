@@ -21,7 +21,7 @@ export function ChatView({ messages, recipientMap, loading }: Props) {
   if (messages.length === 0) {
     return (
       <View style={styles.center}>
-        <Text style={styles.emptyText}>No messages</Text>
+        <Text style={styles.emptyText}>אין הודעות</Text>
       </View>
     );
   }
@@ -35,7 +35,7 @@ export function ChatView({ messages, recipientMap, loading }: Props) {
         return (
           <ChatBubble
             senderId={item.data.senderId}
-            senderName={recipient?.nickname || "Unknown"}
+            senderName={recipient?.nickname || "לא ידוע"}
             content={item.data.content}
             timestamp={item.data.timestamp.toDate()}
           />

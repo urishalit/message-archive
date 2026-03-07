@@ -25,7 +25,7 @@ export function ConversationCard({
         <Text style={styles.badge}>{platform}</Text>
       </View>
       <Text style={styles.subtitle}>
-        {date.toLocaleDateString()} - {messageCount} messages
+        {date.toLocaleDateString()} - {messageCount} הודעות
       </Text>
     </TouchableOpacity>
   );

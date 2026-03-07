@@ -14,14 +14,14 @@ export default function TabLayout() {
       <Tabs.Screen
         name="home"
         options={{
-          title: "Home",
+          title: "ראשי",
           tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 20 }}>{"🏠"}</Text>,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: "Settings",
+          title: "הגדרות",
           tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 20 }}>{"⚙️"}</Text>,
         }}
       />

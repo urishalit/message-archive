@@ -33,7 +33,7 @@ export default function ImportScreen() {
 
   const handleSharedFile = async (uri: string) => {
     if (!user) {
-      Alert.alert("Please sign in first");
+      Alert.alert("יש להתחבר קודם");
       router.replace("/login");
       return;
     }
@@ -42,7 +42,7 @@ export default function ImportScreen() {
       const content = await FileSystem.readAsStringAsync(uri);
       handleContent(content);
     } catch (error: any) {
-      Alert.alert("Error", "Failed to read shared file: " + error.message);
+      Alert.alert("שגיאה", "קריאת הקובץ נכשלה: " + error.message);
       setLoading(false);
     }
   };
@@ -51,7 +51,7 @@ export default function ImportScreen() {
     try {
       const parsed = detectAndParse(content);
       if (parsed.messages.length === 0) {
-        Alert.alert("No messages found", "The file does not contain any parseable messages.");
+        Alert.alert("לא נמצאו הודעות", "הקובץ אינו מכיל הודעות שניתן לפענח.");
         setLoading(false);
         return;
       }
@@ -59,7 +59,7 @@ export default function ImportScreen() {
       globalThis.__importData = parsed;
       router.push("/import/select-range");
     } catch (error: any) {
-      Alert.alert("Parse Error", error.message || "Failed to parse chat export");
+      Alert.alert("שגיאת פענוח", error.message || "פענוח הצ'אט נכשל");
     }
     setLoading(false);
   };
@@ -78,7 +78,7 @@ export default function ImportScreen() {
       const content = await FileSystem.readAsStringAsync(file.uri);
       handleContent(content);
     } catch (error: any) {
-      Alert.alert("Error", error.message || "Failed to pick file");
+      Alert.alert("שגיאה", error.message || "בחירת הקובץ נכשלה");
       setLoading(false);
     }
   };
@@ -87,16 +87,16 @@ export default function ImportScreen() {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#4A90D9" />
-        <Text style={styles.loadingText}>Parsing chat export...</Text>
+        <Text style={styles.loadingText}>מפענח ייצוא צ'אט...</Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Import Chat Export</Text>
+      <Text style={styles.title}>ייבוא ייצוא צ'אט</Text>
       <Text style={styles.description}>
-        Select a WhatsApp .txt export or Telegram result.json file
+        בחר קובץ ייצוא WhatsApp (.txt) או Telegram (result.json)
       </Text>
 
       <TouchableOpacity
@@ -104,11 +104,11 @@ export default function ImportScreen() {
         onPress={pickFile}
         activeOpacity={0.8}
       >
-        <Text style={styles.buttonText}>Pick File</Text>
+        <Text style={styles.buttonText}>בחר קובץ</Text>
       </TouchableOpacity>
 
       <Text style={styles.hint}>
-        You can also share a file directly from WhatsApp or Telegram to this app
+        ניתן גם לשתף קובץ ישירות מ-WhatsApp או Telegram לאפליקציה זו
       </Text>
     </View>
   );

@@ -28,7 +28,7 @@ export function RecipientCard({
         <Text style={styles.nickname}>{nickname}</Text>
         <Text style={styles.subtitle}>
           {platform}
-          {conversationCount !== undefined && ` - ${conversationCount} conversations`}
+          {conversationCount !== undefined && ` - ${conversationCount} שיחות`}
         </Text>
       </View>
     </TouchableOpacity>

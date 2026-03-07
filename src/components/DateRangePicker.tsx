@@ -42,7 +42,7 @@ export function DateRangePicker({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>From</Text>
+      <Text style={styles.label}>מ-</Text>
       <View style={styles.row}>
         <TouchableOpacity
           style={styles.button}
@@ -58,7 +58,7 @@ export function DateRangePicker({
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.label}>To</Text>
+      <Text style={styles.label}>עד</Text>
       <View style={styles.row}>
         <TouchableOpacity
           style={styles.button}

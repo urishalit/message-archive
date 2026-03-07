@@ -16,10 +16,10 @@ export default function SettingsScreen() {
   const router = useRouter();
 
   const handleSignOut = () => {
-    Alert.alert("Sign Out", "Are you sure you want to sign out?", [
-      { text: "Cancel", style: "cancel" },
+    Alert.alert("התנתקות", "האם אתה בטוח שברצונך להתנתק?", [
+      { text: "ביטול", style: "cancel" },
       {
-        text: "Sign Out",
+        text: "התנתק",
         style: "destructive",
         onPress: async () => {
           await signOut();
@@ -35,7 +35,7 @@ export default function SettingsScreen() {
         {user?.photoURL && (
           <Image source={{ uri: user.photoURL }} style={styles.avatar} />
         )}
-        <Text style={styles.name}>{user?.displayName || "User"}</Text>
+        <Text style={styles.name}>{user?.displayName || "משתמש"}</Text>
         <Text style={styles.email}>{user?.email}</Text>
       </View>
 
@@ -44,14 +44,14 @@ export default function SettingsScreen() {
           style={styles.menuItem}
           onPress={() => router.push("/recipients/edit")}
         >
-          <Text style={styles.menuText}>Manage Nicknames</Text>
+          <Text style={styles.menuText}>ניהול כינויים</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[styles.menuItem, styles.signOutButton]}
           onPress={handleSignOut}
         >
-          <Text style={[styles.menuText, styles.signOutText]}>Sign Out</Text>
+          <Text style={[styles.menuText, styles.signOutText]}>התנתק</Text>
         </TouchableOpacity>
       </View>
     </View>

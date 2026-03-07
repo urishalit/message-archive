@@ -20,7 +20,7 @@ export default function LoginScreen() {
       await signInWithGoogle();
       router.replace("/(tabs)/home");
     } catch (error: any) {
-      Alert.alert("Sign-In Error", error.message || "Failed to sign in");
+      Alert.alert("שגיאת התחברות", error.message || "ההתחברות נכשלה");
     } finally {
       setLoading(false);
     }
@@ -28,9 +28,9 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Message Archive</Text>
+      <Text style={styles.title}>ארכיון הודעות</Text>
       <Text style={styles.subtitle}>
-        Import and organize your chat conversations
+        ייבוא וארגון שיחות הצ'אט שלך
       </Text>
       <TouchableOpacity
         style={styles.button}
@@ -41,7 +41,7 @@ export default function LoginScreen() {
         {loading ? (
           <ActivityIndicator color="#fff" />
         ) : (
-          <Text style={styles.buttonText}>Sign in with Google</Text>
+          <Text style={styles.buttonText}>התחברות עם Google</Text>
         )}
       </TouchableOpacity>
     </View>

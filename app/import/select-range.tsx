@@ -18,7 +18,7 @@ export default function SelectRangeScreen() {
   if (!parsed) {
     return (
       <View style={styles.center}>
-        <Text>No import data found. Please go back and pick a file.</Text>
+        <Text>לא נמצאו נתוני ייבוא. חזור אחורה ובחר קובץ.</Text>
       </View>
     );
   }
@@ -47,7 +47,7 @@ export default function SelectRangeScreen() {
 
   const handleContinue = () => {
     if (filteredMessages.length === 0) {
-      Alert.alert("No messages", "The selected range contains no messages.");
+      Alert.alert("אין הודעות", "הטווח שנבחר אינו מכיל הודעות.");
       return;
     }
     globalThis.__importData = {
@@ -63,11 +63,11 @@ export default function SelectRangeScreen() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={styles.info}>
-        {parsed.messages.length} messages found ({parsed.platform})
+        {parsed.messages.length} הודעות נמצאו ({parsed.platform})
       </Text>
 
       <View style={styles.previewBox}>
-        <Text style={styles.previewLabel}>First message</Text>
+        <Text style={styles.previewLabel}>הודעה ראשונה</Text>
         <Text style={styles.previewText} numberOfLines={2}>
           {firstMsg.sender}: {firstMsg.content}
         </Text>
@@ -77,7 +77,7 @@ export default function SelectRangeScreen() {
       </View>
 
       <View style={styles.previewBox}>
-        <Text style={styles.previewLabel}>Last message</Text>
+        <Text style={styles.previewLabel}>הודעה אחרונה</Text>
         <Text style={styles.previewText} numberOfLines={2}>
           {lastMsg.sender}: {lastMsg.content}
         </Text>
@@ -94,7 +94,7 @@ export default function SelectRangeScreen() {
       />
 
       <Text style={styles.filterInfo}>
-        {filteredMessages.length} messages in selected range
+        {filteredMessages.length} הודעות בטווח שנבחר
       </Text>
 
       <TouchableOpacity
@@ -102,7 +102,7 @@ export default function SelectRangeScreen() {
         onPress={handleContinue}
         activeOpacity={0.8}
       >
-        <Text style={styles.buttonText}>Continue</Text>
+        <Text style={styles.buttonText}>המשך</Text>
       </TouchableOpacity>
     </ScrollView>
   );

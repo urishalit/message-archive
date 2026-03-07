@@ -1,6 +1,10 @@
 import { Stack } from "expo-router";
+import { I18nManager } from "react-native";
 import { AuthProvider } from "../src/providers/AuthProvider";
 import { ShareIntentProvider } from "expo-share-intent";
+
+I18nManager.allowRTL(true);
+I18nManager.forceRTL(true);
 
 export default function RootLayout() {
   return (
@@ -14,14 +18,14 @@ export default function RootLayout() {
           }}
         >
           <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="login" options={{ title: "Sign In" }} />
+          <Stack.Screen name="login" options={{ title: "התחברות" }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="recipient/[recipientId]" options={{ title: "Conversations" }} />
-          <Stack.Screen name="conversation/[conversationId]" options={{ title: "Chat" }} />
-          <Stack.Screen name="import/index" options={{ title: "Import Chat" }} />
-          <Stack.Screen name="import/select-range" options={{ title: "Select Range" }} />
-          <Stack.Screen name="import/confirm" options={{ title: "Confirm Import" }} />
-          <Stack.Screen name="recipients/edit" options={{ title: "Manage Nicknames" }} />
+          <Stack.Screen name="recipient/[recipientId]" options={{ title: "שיחות" }} />
+          <Stack.Screen name="conversation/[conversationId]" options={{ title: "צ'אט" }} />
+          <Stack.Screen name="import/index" options={{ title: "ייבוא צ'אט" }} />
+          <Stack.Screen name="import/select-range" options={{ title: "בחירת טווח" }} />
+          <Stack.Screen name="import/confirm" options={{ title: "אישור ייבוא" }} />
+          <Stack.Screen name="recipients/edit" options={{ title: "ניהול כינויים" }} />
         </Stack>
       </AuthProvider>
     </ShareIntentProvider>

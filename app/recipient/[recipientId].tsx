@@ -41,10 +41,10 @@ export default function RecipientScreen() {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ title: recipient?.nickname || "Conversations" }} />
+      <Stack.Screen options={{ title: recipient?.nickname || "שיחות" }} />
       {conversations.length === 0 ? (
         <View style={styles.center}>
-          <Text style={styles.emptyText}>No conversations</Text>
+          <Text style={styles.emptyText}>אין שיחות</Text>
         </View>
       ) : (
         <FlatList

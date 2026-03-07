@@ -31,7 +31,7 @@ export default function EditRecipientsScreen() {
       await updateRecipientNickname(editingId, editValue.trim());
       setEditingId(null);
     } catch (error: any) {
-      Alert.alert("Error", error.message || "Failed to update nickname");
+      Alert.alert("שגיאה", error.message || "עדכון הכינוי נכשל");
     } finally {
       setSaving(false);
     }
@@ -49,7 +49,7 @@ export default function EditRecipientsScreen() {
     <View style={styles.container}>
       {recipients.length === 0 ? (
         <View style={styles.center}>
-          <Text style={styles.emptyText}>No recipients yet</Text>
+          <Text style={styles.emptyText}>אין נמענים עדיין</Text>
         </View>
       ) : (
         <FlatList
@@ -82,14 +82,14 @@ export default function EditRecipientsScreen() {
                         disabled={saving}
                       >
                         <Text style={styles.saveText}>
-                          {saving ? "..." : "Save"}
+                          {saving ? "..." : "שמור"}
                         </Text>
                       </TouchableOpacity>
                       <TouchableOpacity
                         onPress={() => setEditingId(null)}
                         style={styles.cancelButton}
                       >
-                        <Text style={styles.cancelText}>Cancel</Text>
+                        <Text style={styles.cancelText}>ביטול</Text>
                       </TouchableOpacity>
                     </View>
                   ) : (

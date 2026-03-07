@@ -17,10 +17,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = auth().onAuthStateChanged(async (firebaseUser) => {
+    const unsubscribe = auth().onAuthStateChanged((firebaseUser) => {
       setUser(firebaseUser);
+      setLoading(false);
       if (firebaseUser) {
-        await firestore().collection("users").doc(firebaseUser.uid).set(
+        firestore().collection("users").doc(firebaseUser.uid).set(
           {
             uid: firebaseUser.uid,
             email: firebaseUser.email,
@@ -29,9 +30,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             createdAt: firestore.FieldValue.serverTimestamp(),
           },
           { merge: true }
-        );
+        ).catch(() => {});
       }
-      setLoading(false);
     });
     return unsubscribe;
   }, []);
