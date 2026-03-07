@@ -68,7 +68,13 @@ export default function RecipientScreen() {
                     {
                       text: "מחק",
                       style: "destructive",
-                      onPress: () => deleteConversation(item.id),
+                      onPress: async () => {
+                        try {
+                          await deleteConversation(item.id);
+                        } catch (e: any) {
+                          Alert.alert("שגיאה", e.message || "המחיקה נכשלה");
+                        }
+                      },
                     },
                   ]
                 )
