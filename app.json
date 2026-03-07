@@ -42,6 +42,13 @@
         }
       ],
       "expo-document-picker"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "6ba1135d-881c-4f74-92c6-ca4939f0cfea"
+      }
+    },
+    "owner": "urishalit"
   }
 }

@@ -33,8 +33,7 @@ yarn-error.*
 # local env files
 .env*.local
 
-# Firebase config (contains API keys)
-google-services.json
+# Firebase config (iOS)
 GoogleService-Info.plist
 
 # typescript
