@@ -6,13 +6,14 @@ import { ParsedChat, ParsedMessage } from "./types";
 // [DD/MM/YYYY, HH:MM:SS] Sender: Message
 const TIMESTAMP_PATTERNS = [
   // With brackets: [DD/MM/YYYY, HH:MM:SS]
-  /^\[(\d{1,2}\/\d{1,2}\/\d{2,4}),\s*(\d{1,2}:\d{2}(?::\d{2})?(?:\s*[APap][Mm])?)\]\s*/,
-  // Without brackets: DD/MM/YYYY, HH:MM -
-  /^(\d{1,2}\/\d{1,2}\/\d{2,4}),\s*(\d{1,2}:\d{2}(?::\d{2})?(?:\s*[APap][Mm])?)\s*-\s*/,
+  /^\[(\d{1,2}[/.]\d{1,2}[/.]\d{2,4}),\s*(\d{1,2}:\d{2}(?::\d{2})?(?:\s*[APap][Mm])?)\]\s*/,
+  // Without brackets: DD/MM/YYYY, HH:MM - (also matches dots and optional RTL mark)
+  /^\u200f?(\d{1,2}[/.]\d{1,2}[/.]\d{2,4}),\s*(\d{1,2}:\d{2}(?::\d{2})?(?:\s*[APap][Mm])?)\s*-\s*/,
 ];
 
 const SYSTEM_MESSAGE_INDICATORS = [
   "Messages and calls are end-to-end encrypted",
+  "ההודעות והשיחות מוצפנות מקצה לקצה",
   "created group",
   "added you",
   "changed the subject",
@@ -27,7 +28,7 @@ const SYSTEM_MESSAGE_INDICATORS = [
 ];
 
 function parseTimestamp(dateStr: string, timeStr: string): Date | null {
-  const parts = dateStr.split("/").map(Number);
+  const parts = dateStr.split(/[/.]/).map(Number);
   if (parts.length !== 3) return null;
 
   let [a, b, year] = parts;
@@ -68,8 +69,10 @@ function parseTimestamp(dateStr: string, timeStr: string): Date | null {
 }
 
 function isSystemMessage(content: string): boolean {
+  // Strip RTL/LTR marks before checking
+  const clean = content.replace(/[\u200F\u200E\u202A-\u202E]/g, "");
   return SYSTEM_MESSAGE_INDICATORS.some((indicator) =>
-    content.toLowerCase().includes(indicator.toLowerCase())
+    clean.toLowerCase().includes(indicator.toLowerCase())
   );
 }
 
