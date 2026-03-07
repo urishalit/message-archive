@@ -10,9 +10,41 @@ import {
 import { useRouter } from "expo-router";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
+import JSZip from "jszip";
 import { useShareIntentContext } from "expo-share-intent";
 import { detectAndParse, ParsedChat } from "../../src/parsers";
 import { useAuth } from "../../src/providers/AuthProvider";
+
+const CHAT_FILE_EXTENSIONS = [".txt", ".json"];
+
+async function extractChatFromZip(uri: string): Promise<string> {
+  const base64 = await FileSystem.readAsStringAsync(uri, {
+    encoding: FileSystem.EncodingType.Base64,
+  });
+  const zip = await JSZip.loadAsync(base64, { base64: true });
+
+  // Look for .txt or .json files (skip media/images)
+  for (const ext of CHAT_FILE_EXTENSIONS) {
+    for (const [filename, file] of Object.entries(zip.files)) {
+      if (!file.dir && filename.toLowerCase().endsWith(ext)) {
+        return await file.async("string");
+      }
+    }
+  }
+
+  throw new Error("לא נמצא קובץ צ'אט (.txt או .json) בתוך הקובץ המכווץ");
+}
+
+async function readFileContent(uri: string, fileName?: string): Promise<string> {
+  const isZip =
+    fileName?.toLowerCase().endsWith(".zip") ||
+    uri.toLowerCase().endsWith(".zip");
+
+  if (isZip) {
+    return extractChatFromZip(uri);
+  }
+  return FileSystem.readAsStringAsync(uri);
+}
 
 export default function ImportScreen() {
   const [loading, setLoading] = useState(false);
@@ -23,7 +55,10 @@ export default function ImportScreen() {
 
   useEffect(() => {
     if (hasShareIntent && shareIntent.files?.length) {
-      handleSharedFile(shareIntent.files[0].path);
+      handleSharedFile(
+        shareIntent.files[0].path,
+        shareIntent.files[0].fileName
+      );
       resetShareIntent();
     } else if (hasShareIntent && shareIntent.text) {
       handleContent(shareIntent.text);
@@ -31,7 +66,7 @@ export default function ImportScreen() {
     }
   }, [hasShareIntent]);
 
-  const handleSharedFile = async (uri: string) => {
+  const handleSharedFile = async (uri: string, fileName?: string) => {
     if (!user) {
       Alert.alert("יש להתחבר קודם");
       router.replace("/login");
@@ -39,10 +74,10 @@ export default function ImportScreen() {
     }
     setLoading(true);
     try {
-      const content = await FileSystem.readAsStringAsync(uri);
+      const content = await readFileContent(uri, fileName);
       handleContent(content);
     } catch (error: any) {
-      Alert.alert("שגיאה", "קריאת הקובץ נכשלה: " + error.message);
+      Alert.alert("שגיאה", error.message || "קריאת הקובץ נכשלה");
       setLoading(false);
     }
   };
@@ -51,11 +86,13 @@ export default function ImportScreen() {
     try {
       const parsed = detectAndParse(content);
       if (parsed.messages.length === 0) {
-        Alert.alert("לא נמצאו הודעות", "הקובץ אינו מכיל הודעות שניתן לפענח.");
+        Alert.alert(
+          "לא נמצאו הודעות",
+          "הקובץ אינו מכיל הודעות שניתן לפענח."
+        );
         setLoading(false);
         return;
       }
-      // Store parsed data in global state for the next screen
       globalThis.__importData = parsed;
       router.push("/import/select-range");
     } catch (error: any) {
@@ -67,7 +104,13 @@ export default function ImportScreen() {
   const pickFile = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: ["text/plain", "application/json", "*/*"],
+        type: [
+          "text/plain",
+          "application/json",
+          "application/zip",
+          "application/x-zip-compressed",
+          "*/*",
+        ],
         copyToCacheDirectory: true,
       });
 
@@ -75,7 +118,7 @@ export default function ImportScreen() {
 
       const file = result.assets[0];
       setLoading(true);
-      const content = await FileSystem.readAsStringAsync(file.uri);
+      const content = await readFileContent(file.uri, file.name);
       handleContent(content);
     } catch (error: any) {
       Alert.alert("שגיאה", error.message || "בחירת הקובץ נכשלה");
@@ -96,7 +139,7 @@ export default function ImportScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>ייבוא ייצוא צ'אט</Text>
       <Text style={styles.description}>
-        בחר קובץ ייצוא WhatsApp (.txt) או Telegram (result.json)
+        בחר קובץ ייצוא WhatsApp (.txt / .zip) או Telegram (.json)
       </Text>
 
       <TouchableOpacity
