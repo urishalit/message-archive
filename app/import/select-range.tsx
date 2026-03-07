@@ -73,25 +73,29 @@ export default function SelectRangeScreen() {
         {parsed.messages.length} הודעות נמצאו ({parsed.platform})
       </Text>
 
-      <View style={styles.previewBox}>
-        <Text style={styles.previewLabel}>הודעה ראשונה</Text>
-        <Text style={styles.previewText} numberOfLines={2}>
-          {firstMsg.sender}: {firstMsg.content}
-        </Text>
-        <Text style={styles.previewDate}>
-          {firstMsg.timestamp.toLocaleString()}
-        </Text>
-      </View>
+      {filteredMessages.length > 0 && (
+        <>
+          <View style={styles.previewBox}>
+            <Text style={styles.previewLabel}>הודעה ראשונה</Text>
+            <Text style={styles.previewText} numberOfLines={2}>
+              {filteredMessages[0].sender}: {filteredMessages[0].content}
+            </Text>
+            <Text style={styles.previewDate}>
+              {filteredMessages[0].timestamp.toLocaleString()}
+            </Text>
+          </View>
 
-      <View style={styles.previewBox}>
-        <Text style={styles.previewLabel}>הודעה אחרונה</Text>
-        <Text style={styles.previewText} numberOfLines={2}>
-          {lastMsg.sender}: {lastMsg.content}
-        </Text>
-        <Text style={styles.previewDate}>
-          {lastMsg.timestamp.toLocaleString()}
-        </Text>
-      </View>
+          <View style={styles.previewBox}>
+            <Text style={styles.previewLabel}>הודעה אחרונה</Text>
+            <Text style={styles.previewText} numberOfLines={2}>
+              {filteredMessages[filteredMessages.length - 1].sender}: {filteredMessages[filteredMessages.length - 1].content}
+            </Text>
+            <Text style={styles.previewDate}>
+              {filteredMessages[filteredMessages.length - 1].timestamp.toLocaleString()}
+            </Text>
+          </View>
+        </>
+      )}
 
       <DateRangePicker
         startDate={startDate}
