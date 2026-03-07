@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(npx create-expo-app@latest:*)",
+      "Bash(cp:*)",
+      "Bash(npx expo:*)",
+      "Bash(npm:*)",
+      "Bash(source ~/.nvm/nvm.sh)",
+      "Bash(nvm ls)",
+      "Read(//opt/homebrew/opt/**)",
+      "Read(//usr/local/**)",
+      "Bash(npx tsc:*)",
+      "Bash(node:*)",
+      "Bash(lsof:*)",
+      "Bash(keytool:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}
