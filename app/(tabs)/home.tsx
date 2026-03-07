@@ -6,10 +6,12 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useRecipients } from "../../src/hooks/useRecipients";
 import { RecipientCard } from "../../src/components/RecipientCard";
+import { deleteRecipient } from "../../src/services/firestore";
 import firestore from "@react-native-firebase/firestore";
 
 export default function HomeScreen() {
@@ -71,6 +73,26 @@ export default function HomeScreen() {
               platform={item.data.platform}
               conversationCount={convoCounts[item.id] || 0}
               onPress={() => router.push(`/recipient/${item.id}`)}
+              onLongPress={() =>
+                Alert.alert(
+                  "מחיקת איש קשר",
+                  `למחוק את "${item.data.nickname}" וכל השיחות שלו?\nפעולה זו אינה ניתנת לביטול.`,
+                  [
+                    { text: "ביטול", style: "cancel" },
+                    {
+                      text: "מחק",
+                      style: "destructive",
+                      onPress: async () => {
+                        try {
+                          await deleteRecipient(item.id);
+                        } catch (e: any) {
+                          Alert.alert("שגיאה", e.message || "המחיקה נכשלה");
+                        }
+                      },
+                    },
+                  ]
+                )
+              }
             />
           )}
         />

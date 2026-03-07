@@ -201,3 +201,18 @@ export async function deleteConversation(conversationId: string) {
 
   await firestore().collection("conversations").doc(conversationId).delete();
 }
+
+export async function deleteRecipient(recipientId: string) {
+  // Delete all conversations that include this recipient
+  const convosSnap = await firestore()
+    .collection("conversations")
+    .where("recipientIds", "array-contains", recipientId)
+    .get();
+
+  for (const convoDoc of convosSnap.docs) {
+    await deleteConversation(convoDoc.id);
+  }
+
+  // Delete the recipient doc
+  await firestore().collection("recipients").doc(recipientId).delete();
+}

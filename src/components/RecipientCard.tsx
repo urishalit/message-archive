@@ -8,6 +8,7 @@ interface Props {
   platform: string;
   conversationCount?: number;
   onPress: () => void;
+  onLongPress?: () => void;
 }
 
 export function RecipientCard({
@@ -16,11 +17,12 @@ export function RecipientCard({
   platform,
   conversationCount,
   onPress,
+  onLongPress,
 }: Props) {
   const color = getColorForRecipient(recipientId);
 
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity style={styles.card} onPress={onPress} onLongPress={onLongPress} activeOpacity={0.7}>
       <View style={[styles.avatar, { backgroundColor: color }]}>
         <Text style={styles.avatarText}>{nickname[0]?.toUpperCase()}</Text>
       </View>
