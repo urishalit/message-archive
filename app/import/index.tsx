@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import * as DocumentPicker from "expo-document-picker";
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import JSZip from "jszip";
 import { useShareIntentContext } from "expo-share-intent";
 import { detectAndParse, ParsedChat } from "../../src/parsers";
@@ -19,7 +19,7 @@ const CHAT_FILE_EXTENSIONS = [".txt", ".json"];
 
 async function extractChatFromZip(uri: string): Promise<string> {
   const base64 = await FileSystem.readAsStringAsync(uri, {
-    encoding: FileSystem.EncodingType.Base64,
+    encoding: "base64" as any,
   });
   const zip = await JSZip.loadAsync(base64, { base64: true });
 
