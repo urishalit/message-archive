@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "668872511650",
+    "project_id": "messages-archive",
+    "storage_bucket": "messages-archive.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:668872511650:android:a02c89f8c558d71f3c47fb",
+        "android_client_info": {
+          "package_name": "com.urishalit.messages.archive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "668872511650-qpvduapsjpnu13es3beones8t00sp1ib.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.urishalit.messages.archive",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "668872511650-j52qdi58lhrav42a54bdpnda6j0llsvn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbCl2a2pvyKIddehewlYrz1AIrAAmla5k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "668872511650-j52qdi58lhrav42a54bdpnda6j0llsvn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
