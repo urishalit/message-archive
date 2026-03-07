@@ -34,7 +34,14 @@ export default function SelectRangeScreen() {
   const firstMsg = sortedMessages[0];
   const lastMsg = sortedMessages[sortedMessages.length - 1];
 
-  const [startDate, setStartDate] = useState(firstMsg.timestamp);
+  const lastDayStart = useMemo(() => {
+    const last = lastMsg.timestamp;
+    const dayStart = new Date(last.getFullYear(), last.getMonth(), last.getDate());
+    const firstOfLastDay = sortedMessages.find((m) => m.timestamp >= dayStart);
+    return firstOfLastDay?.timestamp || firstMsg.timestamp;
+  }, [sortedMessages, lastMsg, firstMsg]);
+
+  const [startDate, setStartDate] = useState(lastDayStart);
   const [endDate, setEndDate] = useState(lastMsg.timestamp);
 
   const filteredMessages = useMemo(
