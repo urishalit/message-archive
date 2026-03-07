@@ -7,6 +7,7 @@ interface Props {
   messageCount: number;
   platform: string;
   onPress: () => void;
+  onLongPress?: () => void;
 }
 
 export function ConversationCard({
@@ -15,9 +16,10 @@ export function ConversationCard({
   messageCount,
   platform,
   onPress,
+  onLongPress,
 }: Props) {
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity style={styles.card} onPress={onPress} onLongPress={onLongPress} activeOpacity={0.7}>
       <View style={styles.header}>
         <Text style={styles.name} numberOfLines={1}>
           {name}

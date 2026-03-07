@@ -5,10 +5,12 @@ import {
   StyleSheet,
   ActivityIndicator,
   Text,
+  Alert,
 } from "react-native";
 import { useLocalSearchParams, useRouter, Stack } from "expo-router";
 import { useConversations } from "../../src/hooks/useConversations";
 import { ConversationCard } from "../../src/components/ConversationCard";
+import { deleteConversation } from "../../src/services/firestore";
 import firestore from "@react-native-firebase/firestore";
 import { RecipientDoc } from "../../src/types/firestore";
 
@@ -57,6 +59,20 @@ export default function RecipientScreen() {
               messageCount={item.data.messageCount}
               platform={item.data.platform}
               onPress={() => router.push(`/conversation/${item.id}`)}
+              onLongPress={() =>
+                Alert.alert(
+                  "מחיקת שיחה",
+                  `למחוק את "${item.data.name}"?\nפעולה זו אינה ניתנת לביטול.`,
+                  [
+                    { text: "ביטול", style: "cancel" },
+                    {
+                      text: "מחק",
+                      style: "destructive",
+                      onPress: () => deleteConversation(item.id),
+                    },
+                  ]
+                )
+              }
             />
           )}
         />
