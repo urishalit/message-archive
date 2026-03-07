@@ -68,6 +68,7 @@ export function subscribeToRecipients(
     .collection("recipients")
     .orderBy("nickname_lower")
     .onSnapshot((snap) => {
+      if (!snap) return;
       const results = snap.docs.map((doc) => ({
         id: doc.id,
         data: doc.data() as RecipientDoc,
@@ -87,6 +88,7 @@ export function subscribeToConversationsForRecipient(
     .where("recipientIds", "array-contains", recipientId)
     .orderBy("date", "desc")
     .onSnapshot((snap) => {
+      if (!snap) return;
       const results = snap.docs.map((doc) => ({
         id: doc.id,
         data: doc.data() as ConversationDoc,
@@ -102,6 +104,7 @@ export function subscribeToAllConversations(
     .collection("conversations")
     .orderBy("date", "desc")
     .onSnapshot((snap) => {
+      if (!snap) return;
       const results = snap.docs.map((doc) => ({
         id: doc.id,
         data: doc.data() as ConversationDoc,
@@ -122,6 +125,7 @@ export function subscribeToMessages(
     .collection("messages")
     .orderBy("order", "asc")
     .onSnapshot((snap) => {
+      if (!snap) return;
       const results = snap.docs.map((doc) => ({
         id: doc.id,
         data: doc.data() as MessageDoc,
