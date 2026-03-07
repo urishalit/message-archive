@@ -23,6 +23,7 @@ export interface ConversationDoc {
   name: string;
   date: FirebaseFirestoreTypes.Timestamp;
   recipientIds: string[];
+  uploaderId?: string;
   platform: Platform;
   importedBy: string;
   createdAt: FirebaseFirestoreTypes.Timestamp;

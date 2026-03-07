@@ -141,11 +141,12 @@ export async function createConversationWithMessages(params: {
   date: Date;
   platform: Platform;
   recipientIds: string[];
+  uploaderId?: string;
   senderMap: Map<string, string>; // original identifier -> recipientId
   messages: ParsedMessage[];
   userId: string;
 }): Promise<string> {
-  const { name, date, platform, recipientIds, senderMap, messages, userId } =
+  const { name, date, platform, recipientIds, uploaderId, senderMap, messages, userId } =
     params;
 
   const convoRef = firestore().collection("conversations").doc();
@@ -155,6 +156,7 @@ export async function createConversationWithMessages(params: {
     name,
     date: firestore.Timestamp.fromDate(date),
     recipientIds,
+    ...(uploaderId ? { uploaderId } : {}),
     platform,
     importedBy: userId,
     createdAt: firestore.FieldValue.serverTimestamp(),

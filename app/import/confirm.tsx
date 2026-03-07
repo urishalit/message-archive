@@ -32,6 +32,7 @@ export default function ConfirmImportScreen() {
     }
     return map;
   });
+  const [uploaderParticipant, setUploaderParticipant] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   if (!parsed) {
@@ -75,11 +76,16 @@ export default function ConfirmImportScreen() {
         (a, b) => a.timestamp.getTime() - b.timestamp.getTime()
       );
 
+      const uploaderId = uploaderParticipant
+        ? senderMap.get(uploaderParticipant)
+        : undefined;
+
       await createConversationWithMessages({
         name: pageName.trim(),
         date: sortedMsgs[0]?.timestamp || new Date(),
         platform: parsed.platform,
         recipientIds,
+        uploaderId,
         senderMap,
         messages: sortedMsgs,
         userId: user.uid,
@@ -134,6 +140,40 @@ export default function ConfirmImportScreen() {
             placeholderTextColor="#999"
           />
         </View>
+      ))}
+
+      <Text style={[styles.sectionTitle, { marginTop: 16 }]}>
+        מי העלה את השיחה?
+      </Text>
+      <Text style={styles.sectionSubtitle}>
+        המעלה לא יוצג ברשימת אנשי הקשר בדף הראשי
+      </Text>
+
+      {parsed.participants.map((participant) => (
+        <TouchableOpacity
+          key={`uploader-${participant}`}
+          style={styles.uploaderRow}
+          onPress={() =>
+            setUploaderParticipant(
+              uploaderParticipant === participant ? null : participant
+            )
+          }
+          activeOpacity={0.7}
+        >
+          <View
+            style={[
+              styles.radio,
+              uploaderParticipant === participant && styles.radioSelected,
+            ]}
+          >
+            {uploaderParticipant === participant && (
+              <View style={styles.radioInner} />
+            )}
+          </View>
+          <Text style={styles.uploaderLabel}>
+            {nicknames[participant] || participant}
+          </Text>
+        </TouchableOpacity>
       ))}
 
       <Text style={styles.summary}>
@@ -235,5 +275,33 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
+  },
+  uploaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 8,
+    gap: 10,
+  },
+  radio: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 2,
+    borderColor: "#ccc",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  radioSelected: {
+    borderColor: "#4A90D9",
+  },
+  radioInner: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: "#4A90D9",
+  },
+  uploaderLabel: {
+    fontSize: 15,
+    color: "#333",
   },
 });

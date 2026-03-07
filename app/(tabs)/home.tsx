@@ -15,24 +15,33 @@ import firestore from "@react-native-firebase/firestore";
 export default function HomeScreen() {
   const { recipients, loading } = useRecipients();
   const [convoCounts, setConvoCounts] = useState<Record<string, number>>({});
+  const [uploaderIds, setUploaderIds] = useState<Set<string>>(new Set());
   const router = useRouter();
 
   useEffect(() => {
-    // Get conversation counts per recipient
+    // Get conversation counts per recipient and collect uploader IDs
     const unsubscribe = firestore()
       .collection("conversations")
       .onSnapshot((snap) => {
+        if (!snap) return;
         const counts: Record<string, number> = {};
+        const uploaders = new Set<string>();
         for (const doc of snap.docs) {
           const data = doc.data();
           for (const rid of data.recipientIds || []) {
             counts[rid] = (counts[rid] || 0) + 1;
           }
+          if (data.uploaderId) {
+            uploaders.add(data.uploaderId);
+          }
         }
         setConvoCounts(counts);
+        setUploaderIds(uploaders);
       });
     return unsubscribe;
   }, []);
+
+  const visibleRecipients = recipients.filter((r) => !uploaderIds.has(r.id));
 
   if (loading) {
     return (
@@ -44,7 +53,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      {recipients.length === 0 ? (
+      {visibleRecipients.length === 0 ? (
         <View style={styles.center}>
           <Text style={styles.emptyText}>אין שיחות עדיין</Text>
           <Text style={styles.emptySubtext}>
@@ -53,7 +62,7 @@ export default function HomeScreen() {
         </View>
       ) : (
         <FlatList
-          data={recipients}
+          data={visibleRecipients}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <RecipientCard
