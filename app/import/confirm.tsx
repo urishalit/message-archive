@@ -80,7 +80,7 @@ export default function ConfirmImportScreen() {
         ? senderMap.get(uploaderParticipant)
         : undefined;
 
-      await createConversationWithMessages({
+      const conversationId = await createConversationWithMessages({
         name: pageName.trim(),
         date: sortedMsgs[0]?.timestamp || new Date(),
         platform: parsed.platform,
@@ -94,12 +94,7 @@ export default function ConfirmImportScreen() {
       // Clean up
       delete globalThis.__importData;
 
-      Alert.alert("יובא בהצלחה!", `${parsed.messages.length} הודעות נשמרו.`, [
-        {
-          text: "OK",
-          onPress: () => router.replace("/(tabs)/home"),
-        },
-      ]);
+      router.replace(`/conversation/${conversationId}`);
     } catch (error: any) {
       Alert.alert("שגיאה", error.message || "השמירה נכשלה");
     } finally {
