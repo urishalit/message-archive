@@ -36,6 +36,13 @@
       [
         "expo-share-intent",
         {
+          "androidIntentFilters": [
+            "text/*",
+            "application/zip",
+            "application/x-zip-compressed",
+            "application/octet-stream",
+            "application/json"
+          ],
           "androidMainActivityAttributes": {
             "android:launchMode": "singleTask"
           }
