@@ -216,6 +216,39 @@ export async function createConversationWithMessages(params: {
   return convoRef.id;
 }
 
+export async function updateMessageContent(
+  conversationId: string,
+  messageId: string,
+  content: string
+) {
+  await firestore()
+    .collection("conversations")
+    .doc(conversationId)
+    .collection("messages")
+    .doc(messageId)
+    .update({ content });
+}
+
+export async function deleteMessages(
+  conversationId: string,
+  messageIds: string[]
+) {
+  const convoRef = firestore().collection("conversations").doc(conversationId);
+
+  for (let i = 0; i < messageIds.length; i += BATCH_LIMIT) {
+    const batch = firestore().batch();
+    const chunk = messageIds.slice(i, i + BATCH_LIMIT);
+    for (const id of chunk) {
+      batch.delete(convoRef.collection("messages").doc(id));
+    }
+    await batch.commit();
+  }
+
+  await convoRef.update({
+    messageCount: firestore.FieldValue.increment(-messageIds.length),
+  });
+}
+
 export async function deleteConversation(conversationId: string) {
   // Read conversation data before deleting so we can clean up orphaned recipients
   const convoDoc = await firestore()

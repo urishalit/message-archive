@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { getColorForRecipient } from "../utils/colors";
 
 interface Props {
@@ -8,6 +9,11 @@ interface Props {
   content: string;
   timestamp: Date;
   isMe?: boolean;
+  messageId?: string;
+  selected?: boolean;
+  selectionMode?: boolean;
+  onPress?: (id: string) => void;
+  onLongPress?: (id: string) => void;
 }
 
 export function ChatBubble({
@@ -16,27 +22,43 @@ export function ChatBubble({
   content,
   timestamp,
   isMe,
+  messageId,
+  selected,
+  selectionMode,
+  onPress,
+  onLongPress,
 }: Props) {
   const bgColor = getColorForRecipient(senderId);
 
   return (
-    <View
-      style={[
-        styles.container,
-        isMe ? styles.containerRight : styles.containerLeft,
-      ]}
+    <Pressable
+      onPress={messageId && onPress ? () => onPress(messageId) : undefined}
+      onLongPress={messageId && onLongPress ? () => onLongPress(messageId) : undefined}
+      delayLongPress={300}
     >
-      <View style={[styles.bubble, { backgroundColor: bgColor }]}>
-        <Text style={styles.sender}>{senderName}</Text>
-        <Text style={styles.content}>{content}</Text>
-        <Text style={styles.time}>
-          {timestamp.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </Text>
+      <View
+        style={[
+          styles.container,
+          isMe ? styles.containerRight : styles.containerLeft,
+        ]}
+      >
+        <View style={[styles.bubble, { backgroundColor: bgColor }, selected && styles.selectedOverlay]}>
+          {selected && (
+            <View style={styles.checkmark}>
+              <MaterialCommunityIcons name="check-circle" size={20} color="#4A90D9" />
+            </View>
+          )}
+          <Text style={styles.sender}>{senderName}</Text>
+          <Text style={styles.content}>{content}</Text>
+          <Text style={styles.time}>
+            {timestamp.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </Text>
+        </View>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -56,6 +78,14 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 8,
+  },
+  selectedOverlay: {
+    backgroundColor: "rgba(74,144,217,0.15)",
+  },
+  checkmark: {
+    position: "absolute",
+    top: 4,
+    left: 4,
   },
   sender: {
     fontSize: 12,
