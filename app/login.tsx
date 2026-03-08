@@ -7,18 +7,19 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { signInWithGoogle } from "../src/services/auth";
 
 export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { redirect } = useLocalSearchParams<{ redirect?: string }>();
 
   const handleSignIn = async () => {
     setLoading(true);
     try {
       await signInWithGoogle();
-      router.replace("/(tabs)/home");
+      router.replace(redirect || "/(tabs)/home");
     } catch (error: any) {
       Alert.alert("שגיאת התחברות", error.message || "ההתחברות נכשלה");
     } finally {

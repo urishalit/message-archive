@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
-import { useLocalSearchParams, Stack } from "expo-router";
+import { View, StyleSheet, Share, Pressable } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useLocalSearchParams, Stack, useRouter } from "expo-router";
 import { useMessages } from "../../src/hooks/useMessages";
 import { ChatView } from "../../src/components/ChatView";
+import { useAuth } from "../../src/providers/AuthProvider";
 import firestore from "@react-native-firebase/firestore";
 import { ConversationDoc, RecipientDoc } from "../../src/types/firestore";
 
@@ -10,11 +12,24 @@ export default function ConversationScreen() {
   const { conversationId } = useLocalSearchParams<{
     conversationId: string;
   }>();
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
   const { messages, loading } = useMessages(conversationId!);
   const [convoName, setConvoName] = useState("");
   const [recipientMap, setRecipientMap] = useState<Map<string, RecipientDoc>>(
     new Map()
   );
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace(`/login?redirect=/conversation/${conversationId}`);
+    }
+  }, [authLoading, user]);
+
+  const shareConversation = async () => {
+    const deepLink = `message-archive://conversation/${conversationId}`;
+    await Share.share({ message: `${convoName}\n${deepLink}` });
+  };
 
   useEffect(() => {
     if (!conversationId) return;
@@ -46,7 +61,16 @@ export default function ConversationScreen() {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ title: convoName || "Chat" }} />
+      <Stack.Screen
+        options={{
+          title: convoName || "Chat",
+          headerRight: () => (
+            <Pressable onPress={shareConversation} style={{ marginRight: 8 }}>
+              <MaterialCommunityIcons name="share-variant" size={22} color="#333" />
+            </Pressable>
+          ),
+        }}
+      />
       <ChatView
         messages={messages}
         recipientMap={recipientMap}
