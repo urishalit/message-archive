@@ -77,6 +77,38 @@ export function subscribeToRecipients(
     });
 }
 
+export async function findRecipientsByIdentifiers(
+  identifiers: string[],
+  platform: Platform
+): Promise<Map<string, { id: string; data: RecipientDoc }>> {
+  const results = new Map<string, { id: string; data: RecipientDoc }>();
+  // Firestore 'in' queries support up to 30 values
+  for (let i = 0; i < identifiers.length; i += 30) {
+    const chunk = identifiers.slice(i, i + 30);
+    const snap = await firestore()
+      .collection("recipients")
+      .where("originalIdentifier", "in", chunk)
+      .where("platform", "==", platform)
+      .get();
+    for (const doc of snap.docs) {
+      const data = doc.data() as RecipientDoc;
+      results.set(data.originalIdentifier, { id: doc.id, data });
+    }
+  }
+  return results;
+}
+
+export async function findUploaderForRecipient(
+  recipientId: string
+): Promise<boolean> {
+  const snap = await firestore()
+    .collection("conversations")
+    .where("uploaderId", "==", recipientId)
+    .limit(1)
+    .get();
+  return !snap.empty;
+}
+
 // --- Conversations ---
 
 export function subscribeToConversationsForRecipient(

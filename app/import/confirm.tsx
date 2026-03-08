@@ -15,6 +15,8 @@ import { ParsedChat } from "../../src/parsers";
 import {
   getOrCreateRecipient,
   createConversationWithMessages,
+  findRecipientsByIdentifiers,
+  findUploaderForRecipient,
 } from "../../src/services/firestore";
 import { suggestConversationTitle } from "../../src/services/ai";
 
@@ -48,19 +50,42 @@ export default function ConfirmImportScreen() {
       }
     }, 3000);
 
-    suggestConversationTitle(parsed)
-      .then((title) => {
-        if (title) {
-          setPageName((cur) => (cur === "" ? title : cur));
+    const aiPromise = suggestConversationTitle(parsed).then((title) => {
+      if (title) {
+        setPageName((cur) => (cur === "" ? title : cur));
+      }
+    });
+
+    const recipientPromise = findRecipientsByIdentifiers(
+      parsed.participants,
+      parsed.platform
+    ).then(async (existingMap) => {
+      if (existingMap.size === 0) return;
+
+      // Pre-fill nicknames from existing recipients
+      const nicknameUpdates: Record<string, string> = {};
+      for (const [identifier, { id, data }] of existingMap) {
+        nicknameUpdates[identifier] = data.nickname;
+      }
+      setNicknames((prev) => ({ ...prev, ...nicknameUpdates }));
+
+      // Check if any existing recipient was previously an uploader
+      for (const [identifier, { id }] of existingMap) {
+        const wasUploader = await findUploaderForRecipient(id);
+        if (wasUploader) {
+          setUploaderParticipant((cur) => cur ?? identifier);
+          break;
         }
-      })
-      .finally(() => {
-        if (!done) {
-          done = true;
-          clearTimeout(timeout);
-          setLoadingAI(false);
-        }
-      });
+      }
+    });
+
+    Promise.all([aiPromise, recipientPromise]).finally(() => {
+      if (!done) {
+        done = true;
+        clearTimeout(timeout);
+        setLoadingAI(false);
+      }
+    });
 
     return () => clearTimeout(timeout);
   }, []);
