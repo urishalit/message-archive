@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>היומן של טאגי</title>
+  <script>
+    // Redirect deep links to the app
+    const path = window.location.pathname;
+    const match = path.match(/^\/conversation\/(.+)/);
+    if (match) {
+      window.location.href = 'message-archive://conversation/' + match[1];
+    }
+  </script>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 40px; }
+  </style>
+</head>
+<body>
+  <h1>היומן של טאגי</h1>
+  <p>התקן את האפליקציה כדי לפתוח קישור זה.</p>
+</body>
+</html>

@@ -28,8 +28,8 @@ export default function ConversationScreen() {
   }, [authLoading, user]);
 
   const shareConversation = async () => {
-    const deepLink = `message-archive://conversation/${conversationId}`;
-    await Share.share({ message: `${convoName}\n${deepLink}` });
+    const deepLink = `https://messages-archive.web.app/conversation/${conversationId}`;
+    await Share.share({ message: deepLink, title: convoName });
   };
 
   const handleDelete = () => {
