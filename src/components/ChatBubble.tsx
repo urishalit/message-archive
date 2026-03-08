@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { View, Text, StyleSheet, Pressable, Animated } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { getColorForRecipient } from "../utils/colors";
 
@@ -12,6 +12,7 @@ interface Props {
   messageId?: string;
   selected?: boolean;
   selectionMode?: boolean;
+  highlighted?: boolean;
   onPress?: (id: string) => void;
   onLongPress?: (id: string) => void;
 }
@@ -25,10 +26,29 @@ export function ChatBubble({
   messageId,
   selected,
   selectionMode,
+  highlighted,
   onPress,
   onLongPress,
 }: Props) {
   const bgColor = getColorForRecipient(senderId);
+  const highlightAnim = useRef(new Animated.Value(highlighted ? 1 : 0)).current;
+
+  useEffect(() => {
+    if (highlighted) {
+      highlightAnim.setValue(1);
+      Animated.timing(highlightAnim, {
+        toValue: 0,
+        duration: 1500,
+        delay: 500,
+        useNativeDriver: false,
+      }).start();
+    }
+  }, [highlighted]);
+
+  const highlightBg = highlightAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["transparent", "#FFF9C4"],
+  });
 
   return (
     <Pressable
@@ -36,10 +56,11 @@ export function ChatBubble({
       onLongPress={messageId && onLongPress ? () => onLongPress(messageId) : undefined}
       delayLongPress={300}
     >
-      <View
+      <Animated.View
         style={[
           styles.container,
           isMe ? styles.containerRight : styles.containerLeft,
+          { backgroundColor: highlightBg },
         ]}
       >
         <View style={[styles.bubble, { backgroundColor: bgColor }, selected && styles.selectedOverlay]}>
@@ -57,7 +78,7 @@ export function ChatBubble({
             })}
           </Text>
         </View>
-      </View>
+      </Animated.View>
     </Pressable>
   );
 }

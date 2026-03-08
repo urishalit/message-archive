@@ -166,6 +166,20 @@ export function subscribeToMessages(
     });
 }
 
+export async function fetchAllMessagesForConversation(
+  conversationId: string
+): Promise<{ id: string; data: MessageDoc }[]> {
+  const snap = await firestore()
+    .collection("conversations")
+    .doc(conversationId)
+    .collection("messages")
+    .get();
+  return snap.docs.map((doc) => ({
+    id: doc.id,
+    data: doc.data() as MessageDoc,
+  }));
+}
+
 // --- Import (batch write) ---
 
 export async function createConversationWithMessages(params: {

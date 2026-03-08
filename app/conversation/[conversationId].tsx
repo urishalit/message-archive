@@ -15,8 +15,9 @@ import firestore from "@react-native-firebase/firestore";
 import { ConversationDoc, RecipientDoc, MessageDoc } from "../../src/types/firestore";
 
 export default function ConversationScreen() {
-  const { conversationId } = useLocalSearchParams<{
+  const { conversationId, highlightMessage } = useLocalSearchParams<{
     conversationId: string;
+    highlightMessage?: string;
   }>();
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -231,6 +232,7 @@ export default function ConversationScreen() {
         loading={loading}
         selectionMode={selectionMode}
         selectedIds={selectedIds}
+        highlightMessageId={highlightMessage}
         onMessagePress={handleMessagePress}
         onMessageLongPress={handleMessageLongPress}
       />
