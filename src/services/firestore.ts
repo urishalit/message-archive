@@ -185,6 +185,13 @@ export async function createConversationWithMessages(params: {
 }
 
 export async function deleteConversation(conversationId: string) {
+  // Read conversation data before deleting so we can clean up orphaned recipients
+  const convoDoc = await firestore()
+    .collection("conversations")
+    .doc(conversationId)
+    .get();
+  const recipientIds: string[] = convoDoc.data()?.recipientIds || [];
+
   // Delete all messages in subcollection first
   const messagesSnap = await firestore()
     .collection("conversations")
@@ -200,6 +207,18 @@ export async function deleteConversation(conversationId: string) {
   }
 
   await firestore().collection("conversations").doc(conversationId).delete();
+
+  // Clean up orphaned recipients (those with no remaining conversations)
+  for (const rid of recipientIds) {
+    const remaining = await firestore()
+      .collection("conversations")
+      .where("recipientIds", "array-contains", rid)
+      .limit(1)
+      .get();
+    if (remaining.empty) {
+      await firestore().collection("recipients").doc(rid).delete();
+    }
+  }
 }
 
 export async function deleteRecipient(recipientId: string) {
