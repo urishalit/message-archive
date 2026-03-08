@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ import {
   getOrCreateRecipient,
   createConversationWithMessages,
 } from "../../src/services/firestore";
+import { suggestConversationTitle } from "../../src/services/ai";
 
 export default function ConfirmImportScreen() {
   const router = useRouter();
@@ -34,11 +35,49 @@ export default function ConfirmImportScreen() {
   });
   const [uploaderParticipant, setUploaderParticipant] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [loadingAI, setLoadingAI] = useState(!!parsed);
+
+  useEffect(() => {
+    if (!parsed) return;
+    let done = false;
+
+    const timeout = setTimeout(() => {
+      if (!done) {
+        done = true;
+        setLoadingAI(false);
+      }
+    }, 3000);
+
+    suggestConversationTitle(parsed)
+      .then((title) => {
+        if (title) {
+          setPageName((cur) => (cur === "" ? title : cur));
+        }
+      })
+      .finally(() => {
+        if (!done) {
+          done = true;
+          clearTimeout(timeout);
+          setLoadingAI(false);
+        }
+      });
+
+    return () => clearTimeout(timeout);
+  }, []);
 
   if (!parsed) {
     return (
       <View style={styles.center}>
         <Text>לא נמצאו נתוני ייבוא. חזור אחורה והתחל מחדש.</Text>
+      </View>
+    );
+  }
+
+  if (loadingAI) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" color="#4A90D9" />
+        <Text style={styles.loadingText}>מכין את השיחה...</Text>
       </View>
     );
   }
@@ -218,6 +257,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#333",
     marginBottom: 24,
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
+    color: "#666",
   },
   sectionTitle: {
     fontSize: 16,
